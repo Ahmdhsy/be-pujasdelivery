@@ -1,3 +1,4 @@
+<!-- resources/views/menu.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +9,7 @@
     <meta name="description" content="Pujas Delivery Admin Dashboard">
     <meta name="author" content="">
 
-    <title>Pujas Delivery - Dashboard</title>
+    <title>Pujas Delivery - Menu</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('templates/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -40,7 +41,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -62,13 +63,12 @@
             </li>
 
             <!-- Nav Item - Menu -->
-<li class="nav-item">
-    <a class="nav-link" href="{{ route('menu.index') }}">
-        <i class="fas fa-fw fa-hamburger"></i>
-        <span>Menu</span>
-    </a>
-</li>
-
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('menu.index') }}">
+                    <i class="fas fa-fw fa-hamburger"></i>
+                    <span>Menu</span>
+                </a>
+            </li>
 
             <!-- Nav Item - Orders -->
             <li class="nav-item">
@@ -255,154 +255,55 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Selamat Datang, Admin!</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Manajemen Menu</h1>
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Unduh Laporan</a>
+                                class="fas fa-plus fa-sm text-white-50"></i> Tambah Menu Baru</a>
                     </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Total Tenant Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Total Tenant</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">15</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-store fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Menu List -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Daftar Menu</h6>
                         </div>
-
-                        <!-- Total Menu Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Total Menu</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">210</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-utensils fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nama</th>
+                                            <th>Deskripsi</th>
+                                            <th>Harga</th>
+                                            <th>Tenant</th>
+                                            <th>Kategori</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($menus as $menu)
+                                        <tr>
+                                            <td>{{ $menu->id }}</td>
+                                            <td>{{ $menu->name }}</td> <!-- Menggunakan accessor -->
+                                            <td>{{ $menu->description }}</td>
+                                            <td>Rp {{ number_format($menu->price, 0, ',', '.') }}</td>
+                                            <td>{{ $menu->tenant->name ?? 'N/A' }}</td>
+                                            <td>{{ $menu->category ?? 'Umum' }}</td>
+                                            <td>
+                                                <a href="#" class="btn btn-info btn-sm">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-
-                        <!-- Pesanan Hari Ini Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pesanan Selesai
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">85%</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                            style="width: 85%" aria-valuenow="85" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pesanan Pending Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pesanan Pending</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">8</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Management Cards -->
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Manajemen Tenant -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Manajemen Tenant</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>Tambah, ubah, atau hapus tenant di sini. Kelola seluruh tenant yang bergabung dengan Pujas Delivery.</p>
-                                    <a href="#" class="btn btn-primary">Kelola Tenant</a>
-                                </div>
-                            </div>
-
-                            <!-- Manajemen Menu -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Manajemen Menu</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>Kelola menu makanan dan minuman dari seluruh tenant. Tambah, ubah, atau hapus menu sesuai kebutuhan.</p>
-                                    <a href="#" class="btn btn-primary">Kelola Menu</a>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-lg-6 mb-4">
-                            
-                            <!-- Manajemen Pesanan -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Manajemen Pesanan</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>Pantau dan kelola status pesanan dari pelanggan. Lihat riwayat pesanan dan tangani pesanan yang sedang berlangsung.</p>
-                                    <a href="#" class="btn btn-primary">Kelola Pesanan</a>
-                                </div>
-                            </div>
-
-                            <!-- Manajemen Pengguna -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Manajemen Pengguna</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>Kelola akun pengguna, termasuk pelanggan, pemilik tenant, dan administrator sistem.</p>
-                                    <a href="#" class="btn btn-primary">Kelola Pengguna</a>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
 
@@ -464,11 +365,11 @@
     <script src="{{ asset('templates/js/sb-admin-2.min.js') }}"></script>
 
     <!-- Page level plugins -->
-    <script src="{{ asset('templates/vendor/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('templates/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('templates/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
     <!-- Page level custom scripts -->
-    <script src="{{ asset('templates/js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('templates/js/demo/chart-pie-demo.js') }}"></script>
+    <script src="{{ asset('templates/js/demo/datatables-demo.js') }}"></script>
 
 </body>
 

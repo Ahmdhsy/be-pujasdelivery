@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MenuController;
 
 // Rute publik
 Route::get('/', function () {
@@ -24,3 +25,11 @@ Route::middleware(['admin'])->group(function () {
 
 Route::get('/forgot-password', [LoginController::class, 'forgotPassword'])->name('password.request');
 Route::get('/register', [LoginController::class, 'register'])->name('register');
+
+Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
+Route::get('/menu/create', [MenuController::class, 'create'])->name('menu.create');
+Route::get('/menu/{menu}/edit', [MenuController::class, 'edit'])->name('menu.edit');
+Route::delete('/menu/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
+
+// Tenant Routes
+Route::resource('tenant', 'App\Http\Controllers\TenantController');
