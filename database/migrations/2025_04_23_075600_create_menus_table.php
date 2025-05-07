@@ -15,8 +15,7 @@ class CreateMenusTable extends Migration
             $table->text('deskripsi');
             $table->string('gambar')->nullable();
             $table->unsignedBigInteger('tenant_id')->nullable();
-            $table->string('category')->nullable(); // Jika menggunakan string category
-            // Atau $table->unsignedBigInteger('category_id')->nullable(); // Jika menggunakan model Category
+            $table->string('category')->nullable();
             $table->timestamps();
             
             $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('set null');
