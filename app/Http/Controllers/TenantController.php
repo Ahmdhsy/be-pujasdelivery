@@ -7,81 +7,27 @@ use Illuminate\Http\Request;
 
 class TenantController extends Controller
 {
-    /**
-     * Display a listing of the tenants.
-     */
+    // Web: Return view for browser
     public function index()
     {
         $tenants = Tenant::all();
         return view('tenant.index', compact('tenants'));
     }
 
-    /**
-     * Show the form for creating a new tenant.
-     */
-    public function create()
+    // API: Return JSON for Postman
+    public function apiIndex()
     {
-        return view('tenant.create');
+        $tenants = Tenant::all();
+        return response()->json($tenants, 200);
     }
 
-    /**
-     * Store a newly created tenant in storage.
-     */
-    public function store(Request $request)
+    // API: Get specific tenant
+    public function apiShow($id)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'phone' => 'nullable|max:20',
-            'status' => 'required|in:active,inactive',
-        ]);
-
-        Tenant::create($validated);
-
-        return redirect()->route('tenant.index')
-            ->with('success', 'Tenant berhasil ditambahkan!');
-    }
-
-    /**
-     * Display the specified tenant.
-     */
-    public function show(Tenant $tenant)
-    {
-        return view('tenant.show', compact('tenant'));
-    }
-
-    /**
-     * Show the form for editing the specified tenant.
-     */
-    public function edit(Tenant $tenant)
-    {
-        return view('tenant.edit', compact('tenant'));
-    }
-
-    /**
-     * Update the specified tenant in storage.
-     */
-    public function update(Request $request, Tenant $tenant)
-    {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'phone' => 'nullable|max:20',
-            'status' => 'required|in:active,inactive',
-        ]);
-
-        $tenant->update($validated);
-
-        return redirect()->route('tenant.index')
-            ->with('success', 'Tenant berhasil diperbarui!');
-    }
-
-    /**
-     * Remove the specified tenant from storage.
-     */
-    public function destroy(Tenant $tenant)
-    {
-        $tenant->delete();
-
-        return redirect()->route('tenant.index')
-            ->with('success', 'Tenant berhasil dihapus!');
+        $tenant = Tenant::find($id);
+        if (!$tenant) {
+            return response()->json(['message' => 'Tenant not found'], 404);
+        }
+        return response()->json($tenant, 200);
     }
 }

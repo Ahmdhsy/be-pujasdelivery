@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\Api\MenuApiController;
-use App\Http\Controllers\Api\TenantApiController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\TenantController;
 
-Route::get('/menus', [MenuApiController::class, 'index']);
-Route::get('/tenants', [TenantApiController::class, 'index']);
+Route::get('/tenants', [TenantController::class, 'apiIndex']);
+Route::get('/tenants/{id}', [TenantController::class, 'apiShow']);
+Route::get('/menus', [MenuController::class, 'apiIndex']);
+Route::get('/menus/{id}', [MenuController::class, 'apiShow']);

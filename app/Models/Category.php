@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
+    protected $fillable = ['name'];
 
-    // Tentukan atribut dan relasi yang diperlukan
+    public function menus()
+    {
+        return $this->hasMany(Menu::class);
+    }
 }
