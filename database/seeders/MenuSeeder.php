@@ -11,29 +11,31 @@ class MenuSeeder extends Seeder
     public function run(): void
     {
         $now = Carbon::now();
-        
         DB::table('menus')->insert([
             [
+                'id' => 1,
                 'nama' => 'Nasi Goreng Spesial',
                 'harga' => 18000.00,
                 'deskripsi' => 'Nasi goreng dengan telur, ayam, dan kerupuk',
                 'gambar' => 'nasi-goreng.jpg',
-                'tenant_id' => 1, // Sesuaikan dengan tenant ID yang ada
-                'category_id' => 1, // Standardized to category_id
+                'tenant_id' => 1,
+                'category_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
+                'id' => 2,
                 'nama' => 'Mie Ayam Bakso',
                 'harga' => 15000.00,
                 'deskripsi' => 'Mie ayam lengkap dengan bakso dan sayur segar',
                 'gambar' => 'mie-ayam-bakso.jpg',
                 'tenant_id' => 1,
-                'category_id' => 1, // Standardized to category_id
+                'category_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
+                'id' => 3,
                 'nama' => 'Es Teh Manis',
                 'harga' => 5000.00,
                 'deskripsi' => 'Minuman es teh manis segar',
@@ -44,16 +46,18 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 4,
                 'nama' => 'Ayam Geprek Level 3',
                 'harga' => 20000.00,
                 'deskripsi' => 'Ayam geprek pedas level 3 dengan nasi dan lalapan',
                 'gambar' => 'ayam-geprek.jpg',
-                'tenant_id' => 2, // Tenant lain
+                'tenant_id' => 2,
                 'category_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
+                'id' => 5,
                 'nama' => 'Sate Ayam Lontong',
                 'harga' => 22000.00,
                 'deskripsi' => 'Sate ayam dengan lontong dan bumbu kacang',
@@ -64,6 +68,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 6,
                 'nama' => 'Shi Katsu',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi, chicken katsu, salad dengan pilihan saus: barbeque, lada hitam, atau spicy fire ricis',
@@ -74,6 +79,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 7,
                 'nama' => 'Hokyben',
                 'harga' => 16000.00,
                 'deskripsi' => 'Nasi, ayam katsu, tori chicken, shrimp ball, dan salad',
@@ -84,6 +90,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 8,
                 'nama' => 'Nasi Goreng Katsu',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi goreng dengan chicken katsu',
@@ -94,6 +101,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 9,
                 'nama' => 'Nasi Goreng Telur',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi goreng dengan telur ceplok',
@@ -104,6 +112,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 10,
                 'nama' => 'Nasi Bisteak Ayam',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi, ayam filet bistik dengan pilihan saus: barbeque, lada hitam, spicy fire ricis',
@@ -114,6 +123,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 11,
                 'nama' => 'Nasi Bisteak Ayam Geprek',
                 'harga' => 14000.00,
                 'deskripsi' => 'Nasi, ayam filet bistik dan sambal geprek',
@@ -124,6 +134,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 12,
                 'nama' => 'Nasi Steak Ayam',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi dan ayam steak dengan saus: lada hitam, teriyaki, atau barbeque',
@@ -134,6 +145,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 13,
                 'nama' => 'Es Teh Manis',
                 'harga' => 5000.00,
                 'deskripsi' => 'Minuman es teh manis segar',
@@ -144,6 +156,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 14,
                 'nama' => 'Manggo Jelly',
                 'harga' => 8000.00,
                 'deskripsi' => 'Minuman mangga dengan jelly',
@@ -154,6 +167,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 15,
                 'nama' => 'Avocado Jelly',
                 'harga' => 8000.00,
                 'deskripsi' => 'Minuman alpukat dengan jelly',
@@ -164,6 +178,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 16,
                 'nama' => 'Coklat Slurpy',
                 'harga' => 8000.00,
                 'deskripsi' => 'Minuman coklat dingin slurpy',
@@ -174,6 +189,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 17,
                 'nama' => 'Cappucino Cincau',
                 'harga' => 8000.00,
                 'deskripsi' => 'Minuman cappucino dengan cincau',
@@ -184,6 +200,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 18,
                 'nama' => 'Nasi Goreng Special',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi goreng spesial dengan topping lengkap',
@@ -194,6 +211,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 19,
                 'nama' => 'Nasi Goreng Ati Ampela',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi goreng dengan ati ampela',
@@ -204,6 +222,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 20,
                 'nama' => 'Nasi Goreng Mawut',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi goreng campur mie',
@@ -214,6 +233,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 21,
                 'nama' => 'Nasi Goreng Oriental',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi goreng bumbu oriental khas',
@@ -224,6 +244,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 22,
                 'nama' => 'Nasi Goreng Ayam Sosis',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi goreng dengan ayam dan sosis',
@@ -234,6 +255,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 23,
                 'nama' => 'Nasi Goreng Katsu',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi goreng dengan chicken katsu',
@@ -244,6 +266,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 24,
                 'nama' => 'Nasi Goreng Filet Geprek',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi goreng dengan filet ayam geprek',
@@ -254,6 +277,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 25,
                 'nama' => 'Nasi Goreng Ayam Geprek',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi goreng dengan ayam geprek',
@@ -264,6 +288,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 26,
                 'nama' => 'Nasi Orak Arik',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi dengan telur orak arik',
@@ -274,6 +299,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 27,
                 'nama' => 'Nasi Omlet',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi dengan telur omlet',
@@ -284,6 +310,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 28,
                 'nama' => 'Nasi Sate Kukus',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi dengan sate kukus khas',
@@ -294,6 +321,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 29,
                 'nama' => 'Nasi Ayam Bakar',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi dengan ayam bakar',
@@ -304,6 +332,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 30,
                 'nama' => 'Nasi Bakar Ayam',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi bakar isi ayam',
@@ -314,6 +343,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 31,
                 'nama' => 'Nasi Cap Cay Goreng/Kuah',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi dengan cap cay goreng atau kuah',
@@ -324,6 +354,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 32,
                 'nama' => 'Nasi Ayam Geprek',
                 'harga' => 15000.00,
                 'deskripsi' => 'Nasi dengan ayam geprek pedas',
@@ -334,6 +365,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 33,
                 'nama' => 'Nasi Filet Geprek',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi dengan ayam filet geprek',
@@ -344,6 +376,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 34,
                 'nama' => 'Nasi Chiken Katsu',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi dengan chicken katsu',
@@ -354,6 +387,7 @@ class MenuSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
+                'id' => 35,
                 'nama' => 'Nasi Chiken Grill',
                 'harga' => 13000.00,
                 'deskripsi' => 'Nasi dengan chicken grill',

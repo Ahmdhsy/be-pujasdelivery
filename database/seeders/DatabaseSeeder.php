@@ -18,15 +18,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            MenuSeeder::class,
-        ]);
-
-        $this->call([
             TenantSeeder::class,
         ]);
 
         $this->call([
+            MenuSeeder::class,
+        ]);
+
+        $this->call([
             CategorySeeder::class,
+        ]);
+        $this->call([
+            GedungSeeder::class,
         ]);
     }
 }
