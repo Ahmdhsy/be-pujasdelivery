@@ -17,3 +17,4 @@ Route::post('/gedung', [GedungController::class, 'store']);
 Route::get('/gedung', [GedungController::class, 'index']);
 Route::post('/transaction', [TransactionController::class, 'store']);
 Route::post('/users/register', [UserController::class, 'register']);
+Route::get('/users/me', [UserController::class, 'me']);

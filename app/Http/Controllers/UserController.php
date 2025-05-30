@@ -16,8 +16,6 @@ class UserController extends Controller
     public function __construct()
     {
         $credentialsPath = config('firebase.projects.default.credentials.file');
-        
-        // Normalisasi path: jika relatif, gunakan base_path()
         $absoluteCredentialsPath = str_contains($credentialsPath, '://') || str_starts_with($credentialsPath, DIRECTORY_SEPARATOR) || str_starts_with($credentialsPath, 'C:\\')
             ? $credentialsPath
             : base_path($credentialsPath);
@@ -114,6 +112,59 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to register user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function me(Request $request)
+    {
+        Log::info('Me endpoint called');
+
+        try {
+            $idToken = $request->bearerToken();
+            if (!$idToken) {
+                Log::error('No Firebase ID token provided');
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Firebase ID token is required',
+                ], 401);
+            }
+
+            Log::info('Verifying Firebase ID token');
+            $verifiedIdToken = $this->firebaseAuth->verifyIdToken($idToken);
+            $firebaseUid = $verifiedIdToken->claims()->get('sub');
+
+            Log::info('Fetching user with firebase_uid', ['firebase_uid' => $firebaseUid]);
+            $user = User::where('firebase_uid', $firebaseUid)->first();
+
+            if (!$user) {
+                Log::error('User not found', ['firebase_uid' => $firebaseUid]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found',
+                ], 404);
+            }
+
+            Log::info('User retrieved successfully', ['user_id' => $user->id]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User retrieved successfully',
+                'data' => $user,
+            ], 200);
+
+        } catch (AuthException $e) {
+            Log::error('Firebase AuthException', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to verify Firebase token',
+                'error' => $e->getMessage(),
+            ], 401);
+        } catch (\Exception $e) {
+            Log::error('General exception in me endpoint', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve user',
                 'error' => $e->getMessage(),
             ], 500);
         }
