@@ -34,6 +34,11 @@ class TransactionController extends Controller
                 return $item['price'] * $item['quantity'];
             });
 
+            if ($request->hasFile('bukti_pembayaran')) {
+                $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+                $data['bukti_pembayaran'] = $path;
+            }
+
             // Simpan transaksi
             $transaction = Transaction::create([
                 'user_id' => $validated['user_id'],

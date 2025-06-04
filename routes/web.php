@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TenantController;
 
 // Rute publik
 Route::get('/', function () {
@@ -31,5 +33,6 @@ Route::get('/menu/create', [MenuController::class, 'create'])->name('menu.create
 Route::get('/menu/{menu}/edit', [MenuController::class, 'edit'])->name('menu.edit');
 Route::delete('/menu/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
 
-// Tenant Routes
-Route::resource('tenant', 'App\Http\Controllers\TenantController');
+Route::resource('tenant', TenantController::class);
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

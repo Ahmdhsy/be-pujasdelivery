@@ -31,5 +31,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             GedungSeeder::class,
         ]);
+        $this->call([
+            AdminSeeder::class,
+        ]);
     }
 }

@@ -1,4 +1,3 @@
-<!-- resources/views/menu.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +8,7 @@
     <meta name="description" content="Pujas Delivery Admin Dashboard">
     <meta name="author" content="">
 
-    <title>Pujas Delivery - Menu</title>
+    <title>Pujas Delivery - Tenant</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('templates/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -56,14 +55,14 @@
             </div>
 
             <!-- Nav Item - Tenant -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="{{ route('tenant.index') }}">
                     <i class="fas fa-fw fa-store"></i>
                     <span>Tenant</span></a>
             </li>
 
             <!-- Nav Item - Menu -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('menu.index') }}">
                     <i class="fas fa-fw fa-hamburger"></i>
                     <span>Menu</span>
@@ -118,18 +117,14 @@
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
-                    <!-- Topbar Search -->
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Cari..."
-                                aria-label="Search" aria-describedby="basic-addon2">
+                                aria-label="Search" aria-describedby="description">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="button">
                                     <i class="fas fa-search fa-sm"></i>
@@ -137,24 +132,18 @@
                             </div>
                         </div>
                     </form>
-
-                    <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
-                            <!-- Dropdown - Messages -->
                             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
+                                aria-labelledby="dropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
                                         <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Cari..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
+                                            placeholder="Cari..." aria-label="Search" aria-describedby="description">
                                         <div class="input-group-append">
                                             <button class="btn btn-primary" type="button">
                                                 <i class="fas fa-search fa-sm"></i>
@@ -164,18 +153,14 @@
                                 </form>
                             </div>
                         </li>
-
-                        <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
                                 <span class="badge badge-danger badge-counter">3+</span>
                             </a>
-                            <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
+                                aria-labelledby="dropdown">
                                 <h6 class="dropdown-header">
                                     Notifikasi
                                 </h6>
@@ -215,10 +200,7 @@
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Lihat Semua Notifikasi</a>
                             </div>
                         </li>
-
                         <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -226,9 +208,8 @@
                                 <img class="img-profile rounded-circle"
                                     src="{{ asset('templates/img/undraw_profile.svg') }}">
                             </a>
-                            <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
+                                aria-labelledby="dropdown">
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profil
@@ -244,9 +225,7 @@
                                 </a>
                             </div>
                         </li>
-
                     </ul>
-
                 </nav>
                 <!-- End of Topbar -->
 
@@ -255,48 +234,56 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Manajemen Menu</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-plus fa-sm text-white-50"></i> Tambah Menu Baru</a>
+                        <h1 class="h3 mb-0 text-gray-800">Manajemen Tenant</h1>
+                        <a href="{{ route('tenant.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Tenant Baru
+                        </a>
                     </div>
 
-                    <!-- Menu List -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Daftar Menu</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Nama</th>
-                                            <th>Deskripsi</th>
-                                            <th>Harga</th>
-                                            <th>Tenant</th>
-                                            <th>Kategori</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($menus as $menu)
-                                        <tr>
-                                            <td>{{ $menu->id }}</td>
-                                            <td>{{ $menu->name }}</td> <!-- Menggunakan accessor -->
-                                            <td>{{ $menu->description }}</td>
-                                            <td>Rp {{ number_format($menu->price, 0, ',', '.') }}</td>
-                                            <td>{{ $menu->tenant->name ?? 'N/A' }}</td>
-                                            <td>{{ $menu->category ->name }}</td>
-                                            <td>
-                                                <a href="#" class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                    <!-- Content Row -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Daftar Tenant</h6>
+                                </div>
+                                <div class="card-body">
+                                    @if($tenants->count() > 0)
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Nama</th>
+                                                    <th>Status</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($tenants as $tenant)
+                                                    <tr>
+                                                        <td>{{ $tenant->id }}</td>
+                                                        <td>{{ $tenant->name }}</td>
+                                                        <td>{{ $tenant->status }}</td>
+                                                        <td>
+                                                            <a href="{{ route('tenant.edit', $tenant->id) }}" class="btn btn-sm btn-primary">
+                                                                <i class="fas fa-edit"></i> Edit
+                                                            </a>
+                                                            <form action="{{ route('tenant.destroy', $tenant->id) }}" method="POST" style="display: inline-block;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus tenant ini?')">
+                                                                    <i class="fas fa-trash"></i> Hapus
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @else
+                                        <p class="text-center text-gray-500">Belum ada data tenant</p>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -311,7 +298,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Pujas Delivery 2025</span>
+                        <span>Copyright © Pujas Delivery 2025</span>
                     </div>
                 </div>
             </footer>
@@ -357,13 +344,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('templates/js/sb-admin-2.min.js') }}"></script>
-
-    <!-- Page level plugins -->
-    <script src="{{ asset('templates/vendor/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('templates/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('templates/js/demo/datatables-demo.js') }}"></script>
 
 </body>
 
