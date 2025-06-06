@@ -12,6 +12,7 @@ Route::get('/tenants/{id}', [TenantController::class, 'apiShow']);
 Route::get('/menus', [MenuController::class, 'apiIndex']);
 Route::get('/menus/{id}', [MenuController::class, 'apiShow']);
 Route::post('/transactions', [TransactionController::class, 'store']);
+Route::get('/transactions/{id}', [TransactionController::class, 'show']);
 Route::get('/transactions/history', [TransactionController::class, 'history']);
 Route::post('/gedung', [GedungController::class, 'store']);
 Route::get('/gedung', [GedungController::class, 'index']);
