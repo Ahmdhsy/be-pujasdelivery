@@ -16,7 +16,7 @@ return new class extends Migration
         $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
         $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade');
         $table->foreignId('gedung_id')->after('tenant_id')->constrained('gedungs');
-        $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending');
+        $table->enum('status', ['diterima', 'diproses', 'dalam pengantaran', 'selesai'])->default('diterima');
         $table->decimal('total_price', 10, 2)->default(0);
         $table->string('bukti_pembayaran')->nullable()->after('total_price');
         $table->timestamps();
