@@ -7,6 +7,7 @@ use App\Models\TransactionItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -84,16 +85,16 @@ class TransactionController extends Controller
                 }])
                 ->get();
 
-            \Log::debug('Raw transactions fetched: ', $transactions->toArray());
+            Log::debug('Raw transactions fetched: ', $transactions->toArray());
 
             if ($transactions->isEmpty()) {
-                \Log::info('No ongoing transactions found');
+                Log::info('No ongoing transactions found');
                 return response()->json(['message' => 'No ongoing transactions found', 'data' => []], 200);
             }
 
             $mappedTransactions = $transactions->map(function ($transaction) {
                 try {
-                    \Log::debug('Processing transaction: ', ['id' => $transaction->id, 'items_count' => $transaction->items->count()]);
+                    Log::debug('Processing transaction: ', ['id' => $transaction->id, 'items_count' => $transaction->items->count()]);
                     $items = $transaction->items->isEmpty() ? [] : $transaction->items->map(function ($item) {
                         return [
                             'transaction_id' => $item->transaction_id,
@@ -119,7 +120,7 @@ class TransactionController extends Controller
                         ]
                     ];
                 } catch (\Exception $e) {
-                    \Log::error("Error mapping transaction {$transaction->id}: {$e->getMessage()}", ['exception' => $e]);
+                    Log::error("Error mapping transaction {$transaction->id}: {$e->getMessage()}", ['exception' => $e]);
                     return [
                         'message' => 'Partial Success',
                         'data' => [
@@ -136,11 +137,11 @@ class TransactionController extends Controller
                 }
             });
 
-            \Log::debug('Mapped transactions: ', $mappedTransactions->toArray());
+            Log::debug('Mapped transactions: ', $mappedTransactions->toArray());
 
             return response()->json($mappedTransactions);
         } catch (\Exception $e) {
-            \Log::error("Error fetching ongoing transactions: {$e->getMessage()}", ['exception' => $e, 'trace' => $e->getTraceAsString()]);
+            Log::error("Error fetching ongoing transactions: {$e->getMessage()}", ['exception' => $e, 'trace' => $e->getTraceAsString()]);
             return response()->json(['error' => 'Internal Server Error', 'details' => $e->getMessage()], 500);
         }
     }
@@ -154,38 +155,69 @@ class TransactionController extends Controller
     public function getCourierHistoryTransactions(Request $request)
     {
         try {
-            $user = auth()->user();
-            if (!$user || !$user->is_courier) {
-                return response()->json(['error' => 'Unauthorized'], 403);
-            }
-
             $transactions = Transaction::whereIn('status', ['selesai', 'dibatalkan'])
-                ->with(['user' => function ($query) {
-                    $query->select('id', 'name');
-                }, 'gedung' => function ($query) {
-                    $query->select('id', 'name');
-                }, 'items'])
+                ->with(['items' => function ($query) {
+                    $query->select('id', 'transaction_id', 'menu_id', 'quantity', 'price', 'subtotal', 'catatan');
+                }])
                 ->get();
 
-            return response()->json($transactions->map(function ($transaction) {
-                return [
-                    'message' => 'Success',
-                    'data' => [
-                        'id' => $transaction->id,
-                        'user_id' => $transaction->user_id,
-                        'user_name' => $transaction->user->name ?? 'Unknown',
-                        'tenant_id' => $transaction->tenant_id,
-                        'gedung_id' => $transaction->gedung_id,
-                        'gedung_name' => $transaction->gedung->name ?? 'Unknown',
-                        'status' => $transaction->status,
-                        'total_price' => $transaction->total_price,
-                        'bukti_pembayaran' => $transaction->bukti_pembayaran,
-                        'items' => $transaction->items
-                    ]
-                ];
-            }));
+            Log::debug('Raw history transactions fetched: ', $transactions->toArray());
+
+            if ($transactions->isEmpty()) {
+                Log::info('No history transactions found');
+                return response()->json(['message' => 'No history transactions found', 'data' => []], 200);
+            }
+
+            $mappedTransactions = $transactions->map(function ($transaction) {
+                try {
+                    Log::debug('Processing history transaction: ', ['id' => $transaction->id, 'items_count' => $transaction->items->count()]);
+                    $items = $transaction->items->isEmpty() ? [] : $transaction->items->map(function ($item) {
+                        return [
+                            'transaction_id' => $item->transaction_id,
+                            'menu_id' => $item->menu_id,
+                            'quantity' => $item->quantity,
+                            'price' => $item->price,
+                            'subtotal' => $item->subtotal,
+                            'catatan' => $item->catatan
+                        ];
+                    })->all();
+
+                    return [
+                        'message' => 'Success',
+                        'data' => [
+                            'id' => $transaction->id,
+                            'user_id' => $transaction->user_id,
+                            'tenant_id' => $transaction->tenant_id,
+                            'gedung_id' => $transaction->gedung_id,
+                            'status' => $transaction->status,
+                            'total_price' => $transaction->total_price,
+                            'bukti_pembayaran' => $transaction->bukti_pembayaran,
+                            'items' => $items
+                        ]
+                    ];
+                } catch (\Exception $e) {
+                    Log::error("Error mapping history transaction {$transaction->id}: {$e->getMessage()}", ['exception' => $e]);
+                    return [
+                        'message' => 'Partial Success',
+                        'data' => [
+                            'id' => $transaction->id,
+                            'user_id' => $transaction->user_id,
+                            'tenant_id' => $transaction->tenant_id,
+                            'gedung_id' => $transaction->gedung_id,
+                            'status' => $transaction->status,
+                            'total_price' => $transaction->total_price,
+                            'bukti_pembayaran' => $transaction->bukti_pembayaran,
+                            'items' => []
+                        ]
+                    ];
+                }
+            });
+
+            Log::debug('Mapped history transactions: ', $mappedTransactions->toArray());
+
+            return response()->json($mappedTransactions);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Error fetching history transactions: {$e->getMessage()}");
+            Log::error("Error fetching history transactions: {$e->getMessage()}");
             return response()->json(['error' => 'Internal Server Error', 'details' => $e->getMessage()], 500);
         }
     }
@@ -234,24 +266,46 @@ class TransactionController extends Controller
     public function show($id)
     {
         try {
-            $transaction = Transaction::with(['user' => function ($query) {
-                $query->select('id', 'name');
-            }, 'gedung' => function ($query) {
-                $query->select('id', 'name');
-            }, 'items'])->findOrFail($id);
+            // Memuat relasi user, gedung, dan items beserta menu dan tenant
+            $transaction = Transaction::with([
+                'user' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'gedung' => function ($query) {
+                    $query->select('id', 'nama_gedung');
+                },
+                'items.menu' => function ($query) {
+                    $query->select('id', 'nama', 'tenant_id');
+                },
+                'items.menu.tenant' => function ($query) {
+                    $query->select('id', 'name');
+                }
+            ])->findOrFail($id);
+
             return response()->json([
                 'message' => 'Success',
                 'data' => [
                     'id' => $transaction->id,
                     'user_id' => $transaction->user_id,
                     'user_name' => $transaction->user->name ?? 'Unknown',
-                    'tenant_id' => $transaction->tenant_id,
                     'gedung_id' => $transaction->gedung_id,
-                    'gedung_name' => $transaction->gedung->name ?? 'Unknown',
+                    'gedung_name' => $transaction->gedung->nama_gedung ?? 'Unknown',
+                    'tenant_id' => $transaction->tenant_id,
                     'status' => $transaction->status,
                     'total_price' => $transaction->total_price,
                     'bukti_pembayaran' => $transaction->bukti_pembayaran,
-                    'items' => $transaction->items
+                    'items' => $transaction->items->map(function ($item) {
+                        return [
+                            'transaction_id' => $item->transaction_id,
+                            'menu_id' => $item->menu_id,
+                            'menu_name' => $item->menu->nama ?? 'Unknown',
+                            'tenant_name' => $item->menu->tenant->name ?? 'Unknown',
+                            'quantity' => $item->quantity,
+                            'price' => $item->price,
+                            'subtotal' => $item->subtotal,
+                            'catatan' => $item->catatan
+                        ];
+                    })
                 ]
             ]);
         } catch (\Exception $e) {
