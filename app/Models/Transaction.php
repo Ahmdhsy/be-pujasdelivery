@@ -17,7 +17,7 @@ class Transaction extends Model
     }
 
     public function items() {
-        return $this->hasMany(TransactionItem::class);
+        return $this->hasMany(TransactionItem::class, 'transaction_id');
     }
     
     public function gedung()

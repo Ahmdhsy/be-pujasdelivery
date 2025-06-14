@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            MenuSeeder::class,
+            CategorySeeder::class,
         ]);
 
         $this->call([
-            CategorySeeder::class,
+            MenuSeeder::class,
         ]);
         $this->call([
             GedungSeeder::class,

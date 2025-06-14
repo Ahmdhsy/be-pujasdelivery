@@ -12,9 +12,13 @@ Route::get('/tenants/{id}', [TenantController::class, 'apiShow']);
 Route::get('/menus', [MenuController::class, 'apiIndex']);
 Route::get('/menus/{id}', [MenuController::class, 'apiShow']);
 Route::post('/transactions', [TransactionController::class, 'store']);
-Route::get('/transactions/history', [TransactionController::class, 'history']);
+Route::get('/transactions/{id}', [TransactionController::class, 'show']);
+Route::get('/transactions/history', [TransactionController::class, 'getTransactions']); 
 Route::post('/gedung', [GedungController::class, 'store']);
 Route::get('/gedung', [GedungController::class, 'index']);
-Route::post('/transaction', [TransactionController::class, 'store']);
 Route::post('/users/register', [UserController::class, 'register']);
 Route::get('/users/me', [UserController::class, 'me']);
+Route::get('/transactions/courier/ongoing', [TransactionController::class, 'getCourierOngoingTransactions']);
+Route::get('/transactions/courier/history', [TransactionController::class, 'getCourierHistoryTransactions']);
+Route::put('/transactions/{id}/status', [TransactionController::class, 'updateStatus']);
+
