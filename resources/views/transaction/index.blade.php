@@ -8,7 +8,7 @@
     <meta name="description" content="Pujas Delivery Admin Dashboard">
     <meta name="author" content="">
 
-    <title>Pujas Delivery - Dashboard</title>
+    <title>Pujas Delivery - Transaksi</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('templates/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -40,7 +40,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -56,7 +56,7 @@
 
             <!-- Nav Item - Tenant -->
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('tenant.index') }}"> <!-- Perubahan di sini -->
+                <a class="nav-link" href="{{ route('tenant.index') }}">
                     <i class="fas fa-fw fa-store"></i>
                     <span>Tenant</span></a>
             </li>
@@ -70,7 +70,7 @@
             </li>
 
             <!-- Nav Item - Orders -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="{{ route('transaction.index') }}">
                     <i class="fas fa-fw fa-shopping-cart"></i>
                     <span>Pesanan</span></a>
@@ -81,7 +81,7 @@
                 <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Pengguna</span></a>
-                </li>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -117,13 +117,9 @@
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
-                    <!-- Topbar Search -->
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
@@ -136,21 +132,29 @@
                             </div>
                         </div>
                     </form>
-
-                    <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Cari..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </li>
-
                         <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -158,7 +162,6 @@
                                 <img class="img-profile rounded-circle"
                                     src="{{ asset('templates/img/undraw_profile.svg') }}">
                             </a>
-                            <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#">
@@ -176,9 +179,7 @@
                                 </a>
                             </div>
                         </li>
-
                     </ul>
-
                 </nav>
                 <!-- End of Topbar -->
 
@@ -187,155 +188,81 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Selamat Datang, Admin!</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Unduh Laporan</a>
+                        <h1 class="h3 mb-0 text-gray-800">Manajemen Transaksi</h1>
                     </div>
 
                     <!-- Content Row -->
                     <div class="row">
-
-                        <!-- Total Tenant Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Total Tenant</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalTenant }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-store fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Total Menu Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Total Menu</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalMenu }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-utensils fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pesanan Hari Ini Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tenant Aktif
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $tenantActivePercentage }}%</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                            style="width: {{ $tenantActivePercentage }}%" aria-valuenow="{{ $tenantActivePercentage }}" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Rata-rata Harga Menu Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Rata-rata Harga Menu</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($averagePrice, 0, ',', '.') }}</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Additional Statistics Row -->
-                    <div class="row">
-                        <!-- Menu Berdasarkan Kategori -->
-                        <div class="col-xl-6 col-lg-7">
+                        <div class="col-lg-12">
                             <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Menu Berdasarkan Kategori</h6>
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Daftar Transaksi</h6>
                                 </div>
                                 <div class="card-body">
-                                    @if($menusByCategory->count() > 0)
-                                        @foreach($menusByCategory as $category)
-                                        <div class="mb-3">
-                                            <div class="small text-gray-500">{{ $category->category ?? 'Tidak Berkategori' }}
-                                                <div class="small float-right"><b>{{ $category->count }} menu</b></div>
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar" style="width: {{ ($category->count / $totalMenu) * 100 }}%"
-                                                    aria-valuenow="{{ ($category->count / $totalMenu) * 100 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
+                                    @if($transactions->count() > 0)
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Pemesan</th>
+                                                        <th>Tenant</th>
+                                                        <th>Gedung</th>
+                                                        <th>Item</th>
+                                                        <th>Total Harga</th>
+                                                        <th>Status</th>
+                                                        <th>Bukti Pembayaran</th>
+                                                        <th>Tanggal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($transactions as $transaction)
+                                                        <tr>
+                                                            <td>{{ $transaction->id }}</td>
+                                                            <td>{{ $transaction->user->name ?? 'User tidak ditemukan' }}</td>
+                                                            <td>{{ $transaction->tenant->name ?? 'Tenant tidak ditemukan' }}</td>
+                                                            <td>{{ $transaction->gedung->name ?? 'Gedung tidak ditemukan' }}</td>
+                                                            <td>
+                                                                <ul class="list-unstyled mb-0">
+                                                                    @foreach($transaction->items as $item)
+                                                                        <li class="small">{{ $item->menu->nama ?? 'Menu tidak ditemukan' }} ({{ $item->quantity }} x Rp {{ number_format($item->price, 0, ',', '.') }})</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </td>
+                                                            <td>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
+                                                            <td>
+                                                                <span class="badge badge-{{ $transaction->status == 'pending' ? 'warning' : ($transaction->status == 'completed' ? 'success' : 'danger') }}">
+                                                                    {{ ucfirst($transaction->status) }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                @if($transaction->bukti_pembayaran)
+                                                                    <a href="{{ asset('storage/' . $transaction->bukti_pembayaran) }}" target="_blank" class="btn btn-sm btn-info">
+                                                                        <i class="fas fa-eye"></i> Lihat Bukti
+                                                                    </a>
+                                                                @else
+                                                                    <span class="text-muted">Tidak ada</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>{{ $transaction->created_at->format('d-m-Y H:i') }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        @endforeach
                                     @else
-                                        <p class="text-center text-gray-500">Belum ada data menu</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Menu Terbaru -->
-                        <div class="col-xl-6 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Menu Terbaru</h6>
-                                </div>
-                                <div class="card-body">
-                                    @if($recentMenus->count() > 0)
-                                        @foreach($recentMenus as $menu)
-                                        <div class="d-flex align-items-center border-bottom py-2">
-                                            <div class="mr-3">
-                                                <div class="icon-circle bg-primary">
-                                                    <i class="fas fa-utensils text-white text-sm"></i>
-                                                </div>
+                                        <div class="text-center py-4">
+                                            <div class="mb-3">
+                                                <i class="fas fa-shopping-cart fa-3x text-gray-300"></i>
                                             </div>
-                                            <div class="flex-grow-1">
-                                                <div class="small text-gray-500">{{ $menu->tenant->name ?? 'Tenant tidak ditemukan' }}</div>
-                                                <div class="font-weight-bold">{{ $menu->nama }}</div>
-                                                <div class="text-xs text-success">Rp {{ number_format($menu->harga, 0, ',', '.') }}</div>
-                                            </div>
+                                            <p class="text-gray-500">Belum ada data transaksi</p>
                                         </div>
-                                        @endforeach
-                                    @else
-                                        <p class="text-center text-gray-500">Belum ada menu</p>
                                     @endif
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <!-- /.container-fluid -->
 
@@ -392,13 +319,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('templates/js/sb-admin-2.min.js') }}"></script>
-
-    <!-- Page level plugins -->
-    <script src="{{ asset('templates/vendor/chart.js/Chart.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('templates/js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('templates/js/demo/chart-pie-demo.js') }}"></script>
 
 </body>
 

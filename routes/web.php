@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TenantController;
+use App\Http\Controllers\TransactionController;
 
 // Rute publik
 Route::get('/', function () {
@@ -36,3 +37,5 @@ Route::delete('/menu/{menu}', [MenuController::class, 'destroy'])->name('menu.de
 Route::resource('tenant', TenantController::class);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('/transaction', [TransactionController::class, 'index'])->name('transaction.index');

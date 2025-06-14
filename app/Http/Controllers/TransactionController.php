@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
+    public function index()
+    {
+        $transactions = Transaction::with(['user', 'tenant', 'gedung', 'items.menu'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        return view('transaction.index', compact('transactions'));
+    }
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
