@@ -1,0 +1,106 @@
+/* Tabel Responsif */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Tabel Border dan Padding */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+}
+
+.table th, .table td {
+    padding: 12px 15px;
+    text-align: left;
+    vertical-align: middle;
+    border: 1px solid #e3e6f0;
+}
+
+/* Header Tabel */
+.table thead th {
+    background-color: #f8f9fc;
+    font-weight: 600;
+    color: #4e73df;
+}
+
+/* Warna Status */
+.status-pending {
+    background-color: #f6c23e;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.status-diproses {
+    background-color: #36b9cc;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.status-dalam-pengantaran {
+    background-color: #1cc88a;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.status-diterima,
+.status-selesai {
+    background-color: #4e73df;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.status-dibatalkan {
+    background-color: #e74a3b;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+/* Tombol Aksi */
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 13px;
+    border-radius: 4px;
+}
+
+/* List item di kolom menu */
+ul.list-unstyled {
+    padding-left: 15px;
+    margin: 0;
+}
+
+ul.list-unstyled li {
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.status-label {
+    background-color: #0d6efd; /* biru Bootstrap */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    font-weight: 500;
+    white-space: nowrap; /* ini bikin satu baris */
+    max-width: 100%;
+    font-size: 0.85rem;
+}
+
+.table td.status-column {
+    width: 160px; /* tambahkan batas lebar minimum */
+}

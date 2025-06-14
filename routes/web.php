@@ -39,3 +39,4 @@ Route::resource('tenant', TenantController::class);
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/transaction', [TransactionController::class, 'index'])->name('transaction.index');
+Route::put('/transaction/{id}/update-status', [TransactionController::class, 'updateStatus'])->name('transaction.updateStatus');

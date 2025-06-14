@@ -18,6 +18,14 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('templates/css/sb-admin-2.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS for Status Colors -->
+    <style>
+        .status-pending { background-color: #FFC107; color: white; padding: 5px 10px; border-radius: 5px; }
+        .status-diproses { background-color: #8B4513; color: white; padding: 5px 10px; border-radius: 5px; }
+        .status-dalam-pengantaran { background-color: #2196F3; color: white; padding: 5px 10px; border-radius: 5px; }
+        .status-btn { margin-left: 10px; padding: 5px 10px; cursor: pointer; }
+    </style>
 </head>
 
 <body id="page-top">
@@ -213,6 +221,7 @@
                                                         <th>Status</th>
                                                         <th>Bukti Pembayaran</th>
                                                         <th>Tanggal</th>
+                                                        <th>Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -231,7 +240,7 @@
                                                             </td>
                                                             <td>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
                                                             <td>
-                                                                <span class="badge badge-{{ $transaction->status == 'pending' ? 'warning' : ($transaction->status == 'completed' ? 'success' : 'danger') }}">
+                                                                <span class="status-{{ str_replace(' ', '-', strtolower($transaction->status)) }}">
                                                                     {{ ucfirst($transaction->status) }}
                                                                 </span>
                                                             </td>
@@ -245,6 +254,23 @@
                                                                 @endif
                                                             </td>
                                                             <td>{{ $transaction->created_at->format('d-m-Y H:i') }}</td>
+                                                            <td>
+                                                                @if($transaction->status === 'pending')
+                                                                    <form action="{{ route('transaction.updateStatus', $transaction->id) }}" method="POST" onsubmit="return confirm('Ubah status menjadi Diproses?');">
+                                                                        @csrf
+                                                                        @method('PUT')
+                                                                        <input type="hidden" name="status" value="diproses">
+                                                                        <button type="submit" class="btn btn-warning btn-sm">Proses</button>
+                                                                    </form>
+                                                                @elseif($transaction->status === 'diproses')
+                                                                    <form action="{{ route('transaction.updateStatus', $transaction->id) }}" method="POST" onsubmit="return confirm('Ubah status menjadi Dalam Pengantaran?');">
+                                                                        @csrf
+                                                                        @method('PUT')
+                                                                        <input type="hidden" name="status" value="dalam pengantaran">
+                                                                        <button type="submit" class="btn btn-success btn-sm">Antar</button>
+                                                                    </form>
+                                                                @endif
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -320,6 +346,32 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('templates/js/sb-admin-2.min.js') }}"></script>
 
+    <!-- Custom JavaScript for Status Update -->
+    <script>
+        function updateStatus(transactionId, newStatus) {
+            if (confirm('Yakin ingin mengubah status transaksi?')) {
+                fetch(`/transactions/${transactionId}/status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Status updated') {
+                        location.reload();
+                    } else {
+                        alert('Gagal mengubah status');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+    <!-- Ensure CSRF token is included in the head -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </body>
 
 </html>
