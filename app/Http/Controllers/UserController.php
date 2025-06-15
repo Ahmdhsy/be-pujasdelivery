@@ -55,7 +55,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            Log::warning('Validation failed', ['errors' => $validator->errors()]);
+            Log::info('Validation failed', ['errors' => $validator->errors()]);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Validation failed',
@@ -165,6 +165,153 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to retrieve user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateName(Request $request)
+    {
+        Log::info('Update name request received', ['input' => $request->all()]);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            Log::warning('Validation failed', ['errors' => $validator->errors()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $idToken = $request->bearerToken();
+            if (!$idToken) {
+                Log::error('No Firebase ID token provided');
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Firebase ID token is required',
+                ], 401);
+            }
+
+            Log::info('Verifying Firebase ID token');
+            $verifiedIdToken = $this->firebaseAuth->verifyIdToken($idToken);
+            $firebaseUid = $verifiedIdToken->claims()->get('sub');
+
+            Log::info('Fetching user with firebase_uid', ['firebase_uid' => $firebaseUid]);
+            $user = User::where('firebase_uid', $firebaseUid)->first();
+
+            if (!$user) {
+                Log::error('User not found', ['firebase_uid' => $firebaseUid]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found',
+                ], 404);
+            }
+
+            $user->name = $request->input('name');
+            $user->save();
+
+            Log::info('User name updated successfully', ['user_id' => $user->id, 'new_name' => $user->name]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User name updated successfully',
+                'data' => $user,
+            ], 200);
+
+        } catch (AuthException $e) {
+            Log::error('Firebase AuthException', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to verify Firebase token',
+                'error' => $e->getMessage(),
+            ], 401);
+        } catch (\Exception $e) {
+            Log::error('General exception in updateName', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update user name',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateProfilePhoto(Request $request)
+    {
+        Log::info('Update profile photo request received');
+
+        $validator = Validator::make($request->all(), [
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Maksimum 2MB
+        ]);
+
+        if ($validator->fails()) {
+            Log::warning('Validation failed', ['errors' => $validator->errors()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $idToken = $request->bearerToken();
+            if (!$idToken) {
+                Log::error('No Firebase ID token provided');
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Firebase ID token is required',
+                ], 401);
+            }
+
+            Log::info('Verifying Firebase ID token');
+            $verifiedIdToken = $this->firebaseAuth->verifyIdToken($idToken);
+            $firebaseUid = $verifiedIdToken->claims()->get('sub');
+
+            Log::info('Fetching user with firebase_uid', ['firebase_uid' => $firebaseUid]);
+            $user = User::where('firebase_uid', $firebaseUid)->first();
+
+            if (!$user) {
+                Log::error('User not found', ['firebase_uid' => $firebaseUid]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found',
+                ], 404);
+            }
+
+            if ($request->hasFile('profile_photo')) {
+                $file = $request->file('profile_photo');
+                $path = $file->store('profile_photos', 'public'); // Simpan di storage/public/profile_photos
+                $user->profile_photo = $path;
+                $user->save();
+
+                Log::info('Profile photo updated successfully', ['user_id' => $user->id, 'path' => $path]);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Profile photo updated successfully',
+                    'data' => $user,
+                ], 200);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No file uploaded',
+            ], 400);
+
+        } catch (AuthException $e) {
+            Log::error('Firebase AuthException', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to verify Firebase token',
+                'error' => $e->getMessage(),
+            ], 401);
+        } catch (\Exception $e) {
+            Log::error('General exception in updateProfilePhoto', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update profile photo',
                 'error' => $e->getMessage(),
             ], 500);
         }
