@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -20,12 +21,6 @@ class TransactionController extends Controller
         return view('transaction.index', compact('transactions'));
     }
     
-    /**
-     * Store a new transaction.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -36,32 +31,27 @@ class TransactionController extends Controller
             'items.*.menu_id' => 'required|exists:menus,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
-            'items.*.catatan' => 'nullable|string|max:255', // Validasi untuk catatan per item
+            'items.*.catatan' => 'nullable|string|max:255',
             'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         DB::beginTransaction();
 
         try {
-            // Simpan file bukti pembayaran
             $buktiPath = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
-
-            // Hitung total harga
             $total = collect($validated['items'])->sum(function ($item) {
                 return $item['price'] * $item['quantity'];
             });
 
-            // Buat transaksi baru
             $transaction = Transaction::create([
                 'user_id' => $validated['user_id'],
                 'tenant_id' => $validated['tenant_id'],
                 'gedung_id' => $validated['gedung_id'],
-                'status' => 'diterima',
+                'status' => 'pending',
                 'total_price' => $total,
                 'bukti_pembayaran' => $buktiPath,
             ]);
 
-            // Simpan item transaksi
             foreach ($validated['items'] as $item) {
                 TransactionItem::create([
                     'transaction_id' => $transaction->id,
@@ -85,12 +75,10 @@ class TransactionController extends Controller
         }
     }
 
-
-    
     public function getCourierOngoingTransactions(Request $request)
     {
         try {
-            $transactions = Transaction::whereIn('status', ['diterima', 'diproses', 'dalam pengantaran'])
+            $transactions = Transaction::whereIn('status', ['pending', 'diproses', 'pengantaran']) // Ubah dari ['diterima', 'diproses', 'dalam pengantaran']
                 ->with(['items' => function ($query) {
                     $query->select('id', 'transaction_id', 'menu_id', 'quantity', 'price', 'subtotal', 'catatan');
                 }])
@@ -157,16 +145,10 @@ class TransactionController extends Controller
         }
     }
 
-    /**
-     * Get history transactions for courier.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getCourierHistoryTransactions(Request $request)
     {
         try {
-            $transactions = Transaction::whereIn('status', ['selesai', 'dibatalkan'])
+            $transactions = Transaction::where('status', 'selesai') // Ubah dari ['selesai', 'dibatalkan']
                 ->with(['items' => function ($query) {
                     $query->select('id', 'transaction_id', 'menu_id', 'quantity', 'price', 'subtotal', 'catatan');
                 }])
@@ -233,20 +215,17 @@ class TransactionController extends Controller
         }
     }
 
-    /**
-     * Update transaction status.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function updateStatus(Request $request, $id)
     {
         try {
             $transaction = Transaction::findOrFail($id);
-            $request->validate(['status' => 'required|in:diterima,diproses,dalam pengantaran,selesai,dibatalkan']);
+            $request->validate([
+                'status' => 'required|in:pending,diproses,pengantaran,diterima,selesai' // Ubah validasi
+            ]);
+
             $transaction->status = $request->status;
             $transaction->save();
+
             return response()->json([
                 'message' => 'Status updated',
                 'data' => [
@@ -263,21 +242,14 @@ class TransactionController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Error updating transaction status: {$e->getMessage()}");
+            Log::error("Error updating transaction status: {$e->getMessage()}");
             return response()->json(['error' => 'Internal Server Error', 'details' => $e->getMessage()], 500);
         }
     }
 
-    /**
-     * Show a specific transaction.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function show($id)
     {
         try {
-            // Memuat relasi user, gedung, dan items beserta menu dan tenant
             $transaction = Transaction::with([
                 'user' => function ($query) {
                     $query->select('id', 'name');
@@ -320,7 +292,7 @@ class TransactionController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Error fetching transaction: {$e->getMessage()}");
+            Log::error("Error fetching transaction: {$e->getMessage()}");
             return response()->json(['error' => 'Internal Server Error', 'details' => $e->getMessage()], 500);
         }
     }

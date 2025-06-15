@@ -7,18 +7,20 @@
 <style>
     .status-pending { background-color: #FFC107; color: white; padding: 5px 10px; border-radius: 5px; }
     .status-diproses { background-color: #8B4513; color: white; padding: 5px 10px; border-radius: 5px; }
-    .status-dalam-pengantaran { background-color: #2196F3; color: white; padding: 5px 10px; border-radius: 5px; }
+    .status-pengantaran { background-color: #2196F3; color: white; padding: 5px 10px; border-radius: 5px; }
+    .status-diterima { background-color: #4CAF50; color: white; padding: 5px 10px; border-radius: 5px; }
+    .status-selesai { background-color: #9E9E9E; color: white; padding: 5px 10px; border-radius: 5px; }
     .status-btn { margin-left: 10px; padding: 5px 10px; cursor: pointer; }
 </style>
 @endsection
 
 @section('content')
-<!-- Page Heading -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Manajemen Transaksi</h1>
 </div>
 
-<!-- Content Row -->
 <div class="row">
     <div class="col-lg-12">
         <div class="card shadow mb-4">
@@ -63,7 +65,17 @@
                                         <td>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
                                         <td>
                                             <span class="status-{{ str_replace(' ', '-', strtolower($transaction->status)) }}">
-                                                {{ ucfirst($transaction->status) }}
+                                                @php
+                                                    $displayStatus = match($transaction->status) {
+                                                        'pending' => 'Pending',
+                                                        'diproses' => 'Diproses',
+                                                        'pengantaran' => 'Dalam Pengantaran',
+                                                        'diterima' => 'Diterima',
+                                                        'selesai' => 'Selesai',
+                                                        default => ucfirst($transaction->status),
+                                                    };
+                                                    echo $displayStatus;
+                                                @endphp
                                             </span>
                                         </td>
                                         <td>
@@ -88,7 +100,7 @@
                                                 <form action="{{ route('transaction.updateStatus', $transaction->id) }}" method="POST" onsubmit="return confirm('Ubah status menjadi Dalam Pengantaran?');">
                                                     @csrf
                                                     @method('PUT')
-                                                    <input type="hidden" name="status" value="dalam pengantaran">
+                                                    <input type="hidden" name="status" value="pengantaran">
                                                     <button type="submit" class="btn btn-success btn-sm">Antar</button>
                                                 </form>
                                             @endif
@@ -129,10 +141,13 @@
                 if (data.message === 'Status updated') {
                     location.reload();
                 } else {
-                    alert('Gagal mengubah status');
+                    alert('Gagal mengubah status: ' + (data.error || 'Unknown error'));
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengubah status');
+            });
         }
     }
 </script>
