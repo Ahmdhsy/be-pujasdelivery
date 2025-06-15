@@ -10,7 +10,7 @@ class TenantController extends Controller
     // Web: Return view for browser
     public function index()
     {
-        $tenants = Tenant::orderBy('name', 'asc')->get(); // Urutkan berdasarkan nama secara ascending
+        $tenants = Tenant::orderBy('id', 'asc')->get(); // Urutkan berdasarkan nama secara ascending
         return view('tenant.index', compact('tenants'));
     }
 

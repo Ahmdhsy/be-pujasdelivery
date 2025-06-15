@@ -14,7 +14,7 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::with(['user', 'tenant', 'gedung', 'items.menu'])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'asc')
             ->get();
             
         return view('transaction.index', compact('transactions'));

@@ -35,8 +35,7 @@
                                     <th>Pemesan</th>
                                     <th>Tenant</th>
                                     <th>Gedung</th>
-                                    <th>Item</th>
-                                    <th>Catatan</th>
+                                    <th>Item & Catatan</th>
                                     <th>Total Harga</th>
                                     <th>Status</th>
                                     <th>Bukti Pembayaran</th>
@@ -50,23 +49,16 @@
                                         <td>{{ $transaction->id }}</td>
                                         <td>{{ $transaction->user->name ?? 'User tidak ditemukan' }}</td>
                                         <td>{{ $transaction->tenant->name ?? 'Tenant tidak ditemukan' }}</td>
-                                        <td>{{ $transaction->gedung->name ?? 'Gedung tidak ditemukan' }}</td>
+                                        <td>{{ $transaction->gedung->nama_gedung ?? 'Gedung tidak ditemukan' }}</td>
                                         <td>
                                             <ul class="list-unstyled mb-0">
                                                 @foreach($transaction->items as $item)
-                                                    <li class="small">{{ $item->menu->nama ?? 'Menu tidak ditemukan' }} ({{ $item->quantity }} x Rp {{ number_format($item->price, 0, ',', '.') }})</li>
+                                                    <li class="mb-2 small">
+                                                        {{ $item->menu->nama ?? 'Menu tidak ditemukan' }} ({{ $item->quantity }} x Rp {{ number_format($item->price, 0, ',', '.') }})<br>
+                                                        <strong>Catatan:</strong> {{ $item->catatan ?? '-' }}
+                                                    </li>
                                                 @endforeach
                                             </ul>
-                                        </td>
-                                        <td>
-                                            {{-- Tambahkan kolom catatan --}}
-                                            @foreach ($transaction->items as $item)
-                                                @if ($item->catatan)
-                                                    {{ $item->catatan }}<br>
-                                                @else
-                                                    -
-                                                @endif
-                                            @endforeach
                                         </td>
                                         <td>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
                                         <td>
