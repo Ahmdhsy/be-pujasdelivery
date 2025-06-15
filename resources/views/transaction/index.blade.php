@@ -36,6 +36,7 @@
                                     <th>Tenant</th>
                                     <th>Gedung</th>
                                     <th>Item</th>
+                                    <th>Catatan</th>
                                     <th>Total Harga</th>
                                     <th>Status</th>
                                     <th>Bukti Pembayaran</th>
@@ -56,6 +57,16 @@
                                                     <li class="small">{{ $item->menu->nama ?? 'Menu tidak ditemukan' }} ({{ $item->quantity }} x Rp {{ number_format($item->price, 0, ',', '.') }})</li>
                                                 @endforeach
                                             </ul>
+                                        </td>
+                                        <td>
+                                            {{-- Tambahkan kolom catatan --}}
+                                            @foreach ($transaction->items as $item)
+                                                @if ($item->catatan)
+                                                    {{ $item->catatan }}<br>
+                                                @else
+                                                    -
+                                                @endif
+                                            @endforeach
                                         </td>
                                         <td>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
                                         <td>
