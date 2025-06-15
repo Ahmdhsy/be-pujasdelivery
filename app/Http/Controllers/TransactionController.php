@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
+use Kreait\Firebase\Factory;
 
 class TransactionController extends Controller
 {
@@ -78,7 +78,7 @@ class TransactionController extends Controller
     public function getCourierOngoingTransactions(Request $request)
     {
         try {
-            $transactions = Transaction::whereIn('status', ['pending', 'diproses', 'pengantaran']) // Ubah dari ['diterima', 'diproses', 'dalam pengantaran']
+            $transactions = Transaction::whereIn('status', ['pending', 'diproses', 'pengantaran'])
                 ->with(['items' => function ($query) {
                     $query->select('id', 'transaction_id', 'menu_id', 'quantity', 'price', 'subtotal', 'catatan');
                 }])
@@ -148,7 +148,7 @@ class TransactionController extends Controller
     public function getCourierHistoryTransactions(Request $request)
     {
         try {
-            $transactions = Transaction::where('status', 'selesai') // Ubah dari ['selesai', 'dibatalkan']
+            $transactions = Transaction::where('status', 'selesai')
                 ->with(['items' => function ($query) {
                     $query->select('id', 'transaction_id', 'menu_id', 'quantity', 'price', 'subtotal', 'catatan');
                 }])
@@ -220,7 +220,7 @@ class TransactionController extends Controller
         try {
             $transaction = Transaction::findOrFail($id);
             $request->validate([
-                'status' => 'required|in:pending,diproses,pengantaran,diterima,selesai' // Ubah validasi
+                'status' => 'required|in:pending,diproses,pengantaran,diterima,selesai'
             ]);
 
             $transaction->status = $request->status;
@@ -258,10 +258,10 @@ class TransactionController extends Controller
                     $query->select('id', 'nama_gedung');
                 },
                 'items.menu' => function ($query) {
-                    $query->select('id', 'nama', 'tenant_id');
-                },
-                'items.menu.tenant' => function ($query) {
-                    $query->select('id', 'name');
+                    $query->select('id', 'nama', 'tenant_id')
+                        ->with(['tenant' => function ($query) {
+                            $query->select('id', 'name');
+                        }]);
                 }
             ])->findOrFail($id);
 
@@ -293,6 +293,122 @@ class TransactionController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error("Error fetching transaction: {$e->getMessage()}");
+            return response()->json(['error' => 'Internal Server Error', 'details' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getUserTransactions(Request $request)
+    {
+        try {
+            // Ambil token dari header Authorization
+            $idToken = $request->bearerToken();
+            if (!$idToken) {
+                Log::error('No Firebase ID token provided');
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Firebase ID token is required',
+                ], 401);
+            }
+
+            // Inisialisasi Firebase untuk verifikasi token
+            $credentialsPath = base_path('storage/app/firebase/firebase-adminsdk.json');
+            $factory = (new Factory)->withServiceAccount($credentialsPath);
+            $firebaseAuth = $factory->createAuth();
+            $verifiedIdToken = $firebaseAuth->verifyIdToken($idToken);
+            $firebaseUid = $verifiedIdToken->claims()->get('sub');
+
+            // Ambil user berdasarkan firebase_uid
+            $user = \App\Models\User::where('firebase_uid', $firebaseUid)->first();
+            if (!$user) {
+                Log::error('User not found', ['firebase_uid' => $firebaseUid]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found',
+                ], 404);
+            }
+
+            // Ambil semua transaksi untuk user ini dengan relasi tenant
+            $transactions = Transaction::where('user_id', $user->id)
+                ->with(['items' => function ($query) {
+                    $query->select('id', 'transaction_id', 'menu_id', 'quantity', 'price', 'subtotal', 'catatan')
+                        ->with(['menu' => function ($query) {
+                            $query->select('id', 'nama', 'tenant_id')
+                                ->with(['tenant' => function ($query) {
+                                    $query->select('id', 'name'); // Ambil nama tenant
+                                }]);
+                        }]);
+                }, 'tenant' => function ($query) { // Tambah relasi langsung ke tenant
+                    $query->select('id', 'name');
+                }, 'gedung' => function ($query) {
+                    $query->select('id', 'nama_gedung');
+                }])
+                ->get();
+
+            Log::debug('User transactions fetched: ', $transactions->toArray());
+
+            if ($transactions->isEmpty()) {
+                Log::info('No transactions found for user', ['user_id' => $user->id]);
+                return response()->json([
+                    'message' => 'No transactions found',
+                    'data' => []
+                ], 200);
+            }
+
+            $mappedTransactions = $transactions->map(function ($transaction) {
+                try {
+                    Log::debug('Processing user transaction: ', ['id' => $transaction->id, 'items_count' => $transaction->items->count()]);
+                    $items = $transaction->items->map(function ($item) {
+                        return [
+                            'transaction_id' => $item->transaction_id,
+                            'menu_id' => $item->menu_id,
+                            'menu_name' => $item->menu->nama ?? 'Unknown',
+                            'tenant_name' => $item->menu->tenant->name ?? 'Unknown Tenant',
+                            'quantity' => $item->quantity,
+                            'price' => $item->price,
+                            'subtotal' => $item->subtotal,
+                            'catatan' => $item->catatan
+                        ];
+                    })->all();
+
+                    return [
+                        'message' => 'Success',
+                        'data' => [
+                            'id' => $transaction->id,
+                            'user_id' => $transaction->user_id,
+                            'user_name' => $transaction->user->name ?? 'Unknown',
+                            'tenant_id' => $transaction->tenant_id,
+                            'tenant_name' => $transaction->tenant->name ?? 'Unknown Tenant', // Tambah nama tenant dari relasi
+                            'gedung_id' => $transaction->gedung_id,
+                            'gedung_name' => $transaction->gedung->nama_gedung ?? 'Unknown',
+                            'status' => $transaction->status,
+                            'total_price' => $transaction->total_price,
+                            'bukti_pembayaran' => $transaction->bukti_pembayaran,
+                            'items' => $items
+                        ]
+                    ];
+                } catch (\Exception $e) {
+                    Log::error("Error mapping transaction {$transaction->id}: {$e->getMessage()}", ['exception' => $e]);
+                    return [
+                        'message' => 'Partial Success',
+                        'data' => [
+                            'id' => $transaction->id,
+                            'user_id' => $transaction->user_id,
+                            'tenant_id' => $transaction->tenant_id,
+                            'gedung_id' => $transaction->gedung_id,
+                            'status' => $transaction->status,
+                            'total_price' => $transaction->total_price,
+                            'bukti_pembayaran' => $transaction->bukti_pembayaran,
+                            'items' => []
+                        ]
+                    ];
+                }
+            });
+
+            Log::debug('Mapped user transactions: ', $mappedTransactions->toArray());
+
+            return response()->json($mappedTransactions);
+        } catch (\Exception $e) {
+            Log::error("Error fetching user transactions: {$e->getMessage()}", ['exception' => $e, 'trace' => $e->getTraceAsString()]);
             return response()->json(['error' => 'Internal Server Error', 'details' => $e->getMessage()], 500);
         }
     }

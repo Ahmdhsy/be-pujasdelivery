@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+            'api' => [
+            'driver' => 'token', // Atau gunakan driver kustom untuk Firebase
+            'provider' => 'users',
+            'hash' => false,
+        ],
     ],
 
     /*

@@ -23,3 +23,4 @@ Route::get('/transactions/courier/history', [TransactionController::class, 'getC
 Route::put('/transactions/{id}/status', [TransactionController::class, 'updateStatus']);
 Route::put('users/update-name', [UserController::class, 'updateName']);
 Route::post('/users/update-profile-photo', [UserController::class, 'updateProfilePhoto']);
+Route::get('/users/transactions', [TransactionController::class, 'getUserTransactions']);
