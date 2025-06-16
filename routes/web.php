@@ -9,7 +9,7 @@ use App\Http\Controllers\TransactionController;
 
 // Rute publik
 Route::get('/', function () {
-    return redirect()->route('login.form');
+    return view('pages.landing');
 });
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
