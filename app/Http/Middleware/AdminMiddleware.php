@@ -10,7 +10,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!session()->has('admin')) {
-            return redirect()->route('dashboard');
+            return redirect()->route('pages.landing');
         }
         
         return $next($request);
